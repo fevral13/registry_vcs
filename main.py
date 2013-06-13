@@ -14,12 +14,14 @@ class MainWindow(QtGui.QMainWindow):
         super().__init__(parent)
         uic.loadUi('main.ui', self)
         self.snapshotButton.clicked.connect(self.make_snapshot)
+
         self.snapshots_list = []
         self.commits_list = []
 
         self.commitsModel = QtGui.QStringListModel([])
         self.commitsView.setModel(self.commitsModel)
         self.snapshots_list.append(Snapshot())
+        self.commitsView.clicked.connect(self.commit_clicked)
 
     def make_snapshot(self):
         # self.st = SnapshotThread()
@@ -31,6 +33,11 @@ class MainWindow(QtGui.QMainWindow):
         # self.statusBar().showMessage('Pressed')
         # self.progressBar.setValue(self.progressBar.value() + 1)
 
+    def commit_clicked(self, index):
+        commit = self.commits_list[index.row()]
+        self.createdTreeView.setModel(commit.created_model())
+        self.modifiedTreeView.setModel(commit.modified_model())
+        self.deletedTreeView.setModel(commit.deleted_model())
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
